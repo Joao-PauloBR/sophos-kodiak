@@ -21,11 +21,14 @@ class _LoginScreenState extends State<LoginScreen> {
     value = value.replaceAll(RegExp(r'[^\d]'), '');
     if (value.length > 14) value = value.substring(0, 14);
     if (value.length > 12) {
-      value = '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12)}';
+      value =
+          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12)}';
     } else if (value.length > 8) {
-      value = '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8)}';
+      value =
+          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8)}';
     } else if (value.length > 5) {
-      value = '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5)}';
+      value =
+          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5)}';
     } else if (value.length > 2) {
       value = '${value.substring(0, 2)}.${value.substring(2)}';
     }
@@ -33,7 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
-    if (_cnpjController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+    if (_cnpjController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
       logger.e('Login com CNPJ: ${_cnpjController.text}');
     }
   }
@@ -74,8 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontFamily: 'AntonSC',
                           color: Colors.white,
                           fontSize: 48,
-                          letterSpacing: 0.5
-                      ),
+                          letterSpacing: 0.5),
                     ),
                     Image.asset(
                       'assets/img/sophos_kodiak_logo.png',
@@ -89,8 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Color(0xFFF6790F),
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5
-                      ),
+                          letterSpacing: 0.5),
                     ),
                     const SizedBox(height: 10),
                     const Text(
@@ -106,16 +108,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 10, bottom: 4),
-                        child: const Text(
-                            'CNPJ',
+                        child: const Text('CNPJ',
                             style: TextStyle(
                                 fontFamily: 'Roboto',
                                 color: Color(0xFFE6E6E6),
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700,
-                                letterSpacing: 0.5
-                            )
-                        ),
+                                letterSpacing: 0.5)),
                       ),
                     ),
                     Padding(
@@ -129,7 +128,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (formatted != value) {
                             _cnpjController.value = TextEditingValue(
                               text: formatted,
-                              selection: TextSelection.collapsed(offset: formatted.length),
+                              selection: TextSelection.collapsed(
+                                  offset: formatted.length),
                             );
                           }
                         },
@@ -138,15 +138,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintStyle: TextStyle(
                               fontFamily: 'Roboto',
                               color: Color(0xFFB8B8B8),
-                              fontSize: 18
-                          ),
+                              fontSize: 18),
                           filled: true,
                           fillColor: Color(0xFF454545),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                         ),
                       ),
                     ),
@@ -155,16 +155,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 10, bottom: 4),
-                        child: const Text(
-                            'Senha',
+                        child: const Text('Senha',
                             style: TextStyle(
                                 fontFamily: 'Roboto',
                                 color: Color(0xFFE6E6E6),
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700,
-                                letterSpacing: 0.5
-                            )
-                        ),
+                                letterSpacing: 0.5)),
                       ),
                     ),
                     Padding(
@@ -186,10 +183,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                              _isPasswordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               color: Color(0xFFB8B8B8),
                             ),
                             onPressed: () {
@@ -222,8 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF190901),
-                                letterSpacing: 0.5
-                            ),
+                                letterSpacing: 0.5),
                           ),
                         ),
                       ),
@@ -241,8 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 18,
                             color: Color(0xFFE6E6E6),
                             decoration: TextDecoration.underline,
-                            decorationColor: Color(0xFFE6E6E6)
-                        ),
+                            decorationColor: Color(0xFFE6E6E6)),
                       ),
                     ),
                   ],
