@@ -44,23 +44,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Stack(
           children: [
             // Retângulo de fundo
-            Positioned(
-              top: 340,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF171717),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(35),
-                    topRight: Radius.circular(35),
+            Container(
+              height: screenHeight,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: screenHeight / 1.7 + mediaQuery.padding.bottom,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF171717),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(35),
+                      topRight: Radius.circular(35),
+                    ),
                   ),
                 ),
               ),
@@ -210,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFF6790F),
-                            padding: const EdgeInsets.symmetric(vertical: 9),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),

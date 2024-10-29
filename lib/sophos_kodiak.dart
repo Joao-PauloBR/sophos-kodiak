@@ -11,7 +11,6 @@ class SophosKodiak extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Sophos Kodiak',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: const LoginScreen(),
