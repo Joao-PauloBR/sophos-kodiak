@@ -141,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Digite o seu CNPJ',
                           hintStyle: TextStyle(
                               fontFamily: 'Roboto',
+                              fontWeight: FontWeight.normal,
                               color: Color(0xFFB8B8B8),
                               fontSize: 18),
                           filled: true,
@@ -178,6 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Digite a sua senha',
                           hintStyle: TextStyle(
                             fontFamily: 'Roboto',
+                            fontWeight: FontWeight.normal,
                             color: Color(0xFFB8B8B8),
                             fontSize: 18,
                           ),
