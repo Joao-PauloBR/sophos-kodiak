@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sophos_kodiak/screens/login_screen.dart';
+import 'package:sophos_kodiak/screens/main_screen.dart';
 
 class SophosKodiak extends StatelessWidget {
   const SophosKodiak({super.key});
@@ -13,7 +14,7 @@ class SophosKodiak extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: const MainScreen(userName: 'Conttrotech'),
     );
   }
 }
