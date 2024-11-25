@@ -22,15 +22,16 @@ class _MainScreenState extends State<MainScreen> {
   bool _isVoiceInputActive = false;
   bool _isLoading = false;
   final List<Map<String, String>> _suggestions = [
-    {
-      'title': 'Preveja quais clientes estão',
-      'subtitle': 'mais propensos a cancelar o serviço'
-    },
-    {'title': 'Quais produtos têm a', 'subtitle': 'maior margem de lucro?'},
-    {
-      'title': 'Qual é a previsão de vendas',
-      'subtitle': 'para os próximos três meses?'
-    },
+    {'title': 'Qual é o valor total de', 'subtitle': 'vendas para o ano atual?'},
+    {'title': 'Qual cliente realizou o', 'subtitle': 'maior número de compras?'},
+    {'title': 'Quais são os 5 produtos', 'subtitle': 'mais vendidos?'},
+    {'title': 'Quantos clientes ativos', 'subtitle': 'existem no banco de dados?'},
+    {'title': 'Quais cidades têm maior', 'subtitle': 'concentração de clientes?'},
+    {'title': 'Qual é o total de contas', 'subtitle': 'a receber em aberto?'},
+    {'title': 'Qual é o percentual de', 'subtitle': 'títulos pagos vs. em aberto?'},
+    {'title': 'Como as vendas evoluíram', 'subtitle': 'nos últimos meses?'},
+    {'title': 'Qual é o tempo médio', 'subtitle': 'entre pedido e faturamento?'},
+    {'title': 'Qual é a previsão de vendas', 'subtitle': 'para o próximo trimestre?'},
   ];
   final List<ChatMessage> _messages = [];
   late stt.SpeechToText _speech;
