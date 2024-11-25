@@ -91,6 +91,34 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  // Função para fazer a requisição à API Flask
+  Future<String> _getResponseFromApi(String message) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:5000/perguntar'), // URL do emulador para localhost
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'pergunta': message,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Decodificando o corpo da resposta em UTF-8
+        final decodedResponse = utf8.decode(response.bodyBytes);
+        final Map<String, dynamic> data = jsonDecode(decodedResponse);
+        return data['resposta'] as String;
+      } else {
+        logger.e('Erro na API: ${response.statusCode}');
+        return 'Desculpe, ocorreu um erro ao processar sua mensagem.';
+      }
+    } catch (e) {
+      logger.e('Erro ao fazer requisição: $e');
+      return 'Desculpe, não foi possível conectar ao servidor.';
+    }
+  }
+
   Future<void> _sendMessage() async {
     String userMessage = _messageController.text.trim();
     if (userMessage.isNotEmpty) {
@@ -109,28 +137,16 @@ class _MainScreenState extends State<MainScreen> {
       _focusNode.unfocus();
 
       try {
-        final response = await http.post(
-          Uri.parse('http://10.0.2.2:5000/api/gemini'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'pergunta': userMessage}),
-        ).timeout(const Duration(seconds: 10));
-
-        if (response.statusCode == 200) {
-          final data = jsonDecode(response.body);
-          setState(() {
-            _messages.add(
-              ChatMessage(
-                text: data['resposta'],
-                isUser: false,
-                timestamp: DateTime.now(),
-              ),
-            );
-          });
-        } else {
-          _showErrorDialog('Erro no servidor: ${response.statusCode}');
-        }
-      } catch (e) {
-        _showErrorDialog('Erro de comunicação: $e');
+        final responseMessage = await _getResponseFromApi(userMessage);
+        setState(() {
+          _messages.add(
+            ChatMessage(
+              text: responseMessage,
+              isUser: false,
+              timestamp: DateTime.now(),
+            ),
+          );
+        });
       } finally {
         setState(() {
           _isLoading = false;
