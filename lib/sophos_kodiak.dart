@@ -14,7 +14,7 @@ class SophosKodiak extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: const MainScreen(userName: 'Conttrotech'),
+      home: const LoginScreen(),
     );
   }
 }

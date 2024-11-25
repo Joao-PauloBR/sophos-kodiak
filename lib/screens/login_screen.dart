@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-//import 'package:flutter/services.dart';
+import 'package:sophos_kodiak/screens/main_screen.dart';
 
 final logger = Logger();
 
@@ -22,24 +22,104 @@ class _LoginScreenState extends State<LoginScreen> {
     if (value.length > 14) value = value.substring(0, 14);
     if (value.length > 12) {
       value =
-          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12)}';
+      '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12)}';
     } else if (value.length > 8) {
       value =
-          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8)}';
+      '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8)}';
     } else if (value.length > 5) {
       value =
-          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5)}';
+      '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5)}';
     } else if (value.length > 2) {
       value = '${value.substring(0, 2)}.${value.substring(2)}';
     }
     return value;
   }
 
+  // Função para validar o CNPJ
+  bool _isValidCnpj(String cnpj) {
+    final regex = RegExp(r'^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$');
+    return regex.hasMatch(cnpj);
+  }
+
+  // Função para validar a senha
+  bool _isValidPassword(String password) {
+    return password.length >= 8;
+  }
+
+  // Função para autenticar o usuário
   void _handleLogin() {
-    if (_cnpjController.text.isNotEmpty &&
-        _passwordController.text.isNotEmpty) {
-      logger.e('Login com CNPJ: ${_cnpjController.text}');
+    final cnpj = _cnpjController.text;
+    final password = _passwordController.text;
+
+    if (_isValidCnpj(cnpj) && _isValidPassword(password)) {
+      // Autenticação com parâmetros fixos
+      if (cnpj == '12.345.678/0001-90' && password == 'password123') {
+        logger.i('Login bem-sucedido com CNPJ: $cnpj');
+        _askPreferredName();
+      } else {
+        logger.e('CNPJ ou senha incorretos');
+        _showErrorDialog('CNPJ ou senha incorretos');
+      }
+    } else {
+      logger.e('CNPJ ou senha inválidos');
+      _showErrorDialog('CNPJ ou senha inválidos');
     }
+  }
+
+  // Função para solicitar o nome preferido
+  void _askPreferredName() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final _nameController = TextEditingController();
+        return AlertDialog(
+          title: const Text('Nome Preferido'),
+          content: TextField(
+            controller: _nameController,
+            decoration: const InputDecoration(hintText: 'Digite seu nome preferido'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _goToMainScreen(_nameController.text);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Função para redirecionar para a tela principal
+  void _goToMainScreen(String userName) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => MainScreen(userName: userName),
+      ),
+    );
+  }
+
+  // Função para exibir um diálogo de erro
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Erro'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

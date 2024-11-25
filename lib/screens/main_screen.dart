@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 final logger = Logger();
 
@@ -16,8 +19,8 @@ class _MainScreenState extends State<MainScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool _isDropdownVisible = false;
   final FocusNode _focusNode = FocusNode();
-  bool _isVoiceInputActive = false; // Para controlar o estado do input de voz
-
+  bool _isVoiceInputActive = false;
+  bool _isLoading = false;
   final List<Map<String, String>> _suggestions = [
     {
       'title': 'Preveja quais clientes estão',
@@ -29,14 +32,15 @@ class _MainScreenState extends State<MainScreen> {
       'subtitle': 'para os próximos três meses?'
     },
   ];
-
-  // Lista para armazenar mensagens do chat
   final List<ChatMessage> _messages = [];
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChange);
+    _speech = stt.SpeechToText();
   }
 
   @override
@@ -63,15 +67,31 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void _toggleVoiceInput() {
-    setState(() {
-      _isVoiceInputActive = !_isVoiceInputActive;
-      // Aqui você implementaria a lógica de reconhecimento de voz
-      logger.d("Toggle voice input: $_isVoiceInputActive");
-    });
+  void _toggleVoiceInput() async {
+    if (_isListening) {
+      _speech.stop();
+      setState(() {
+        _isListening = false;
+      });
+    } else {
+      bool available = await _speech.initialize(
+        onStatus: (val) => logger.d('onStatus: $val'),
+        onError: (val) => logger.e('onError: $val'),
+      );
+      if (available) {
+        setState(() {
+          _isListening = true;
+        });
+        _speech.listen(
+          onResult: (val) => setState(() {
+            _messageController.text = val.recognizedWords;
+          }),
+        );
+      }
+    }
   }
 
-  void _sendMessage() async {
+  Future<void> _sendMessage() async {
     String userMessage = _messageController.text.trim();
     if (userMessage.isNotEmpty) {
       setState(() {
@@ -82,23 +102,61 @@ class _MainScreenState extends State<MainScreen> {
             timestamp: DateTime.now(),
           ),
         );
+        _isLoading = true;
       });
 
       _messageController.clear();
       _focusNode.unfocus();
 
-      // Simular resposta do Gemini (substitua pela chamada real à API)
-      await Future.delayed(const Duration(seconds: 1));
-      setState(() {
-        _messages.add(
-          ChatMessage(
-            text: "Esta é uma resposta simulada do Gemini para: $userMessage",
-            isUser: false,
-            timestamp: DateTime.now(),
-          ),
-        );
-      });
+      try {
+        final response = await http.post(
+          Uri.parse('http://10.0.2.2:5000/api/gemini'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'pergunta': userMessage}),
+        ).timeout(const Duration(seconds: 10));
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          setState(() {
+            _messages.add(
+              ChatMessage(
+                text: data['resposta'],
+                isUser: false,
+                timestamp: DateTime.now(),
+              ),
+            );
+          });
+        } else {
+          _showErrorDialog('Erro no servidor: ${response.statusCode}');
+        }
+      } catch (e) {
+        _showErrorDialog('Erro de comunicação: $e');
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Erro'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -123,6 +181,10 @@ class _MainScreenState extends State<MainScreen> {
                 top: 60,
                 right: 16,
                 child: _buildProfileDropdown(),
+              ),
+            if (_isLoading)
+              Center(
+                child: CircularProgressIndicator(),
               ),
           ],
         ),
@@ -174,7 +236,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildChatArea() {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      reverse: true, // Para mostrar mensagens mais recentes embaixo
+      reverse: true,
       itemCount: _messages.length,
       itemBuilder: (context, index) {
         final message = _messages[_messages.length - 1 - index];
@@ -285,8 +347,8 @@ class _MainScreenState extends State<MainScreen> {
                   IconButton(
                     onPressed: _toggleVoiceInput,
                     icon: Icon(
-                      _isVoiceInputActive ? Icons.mic : Icons.mic_none,
-                      color: _isVoiceInputActive
+                      _isListening ? Icons.mic : Icons.mic_none,
+                      color: _isListening
                           ? const Color(0xFFF6790F)
                           : const Color(0xFFB8B8B8),
                     ),
@@ -347,11 +409,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildDropdownItem(
-    IconData icon,
-    String text, {
-    Color textColor = Colors.white,
-    Color iconColor = Colors.white,
-  }) {
+      IconData icon,
+      String text, {
+        Color textColor = Colors.white,
+        Color iconColor = Colors.white,
+      }) {
     return InkWell(
       onTap: () {
         logger.d("Clicou em: $text");
