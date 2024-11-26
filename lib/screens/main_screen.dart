@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 final logger = Logger();
 
@@ -19,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
   final TextEditingController _messageController = TextEditingController();
   bool _isDropdownVisible = false;
   final FocusNode _focusNode = FocusNode();
-  bool _isVoiceInputActive = false;
   bool _isLoading = false;
   final List<Map<String, String>> _suggestions = [
     {'title': 'Qual é o valor total de', 'subtitle': 'vendas para o ano atual?'},
@@ -34,14 +32,11 @@ class _MainScreenState extends State<MainScreen> {
     {'title': 'Qual é a previsão de vendas', 'subtitle': 'para o próximo trimestre?'},
   ];
   final List<ChatMessage> _messages = [];
-  late stt.SpeechToText _speech;
-  bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(_onFocusChange);
-    _speech = stt.SpeechToText();
   }
 
   @override
@@ -66,30 +61,6 @@ class _MainScreenState extends State<MainScreen> {
         _focusNode.unfocus();
       }
     });
-  }
-
-  void _toggleVoiceInput() async {
-    if (_isListening) {
-      _speech.stop();
-      setState(() {
-        _isListening = false;
-      });
-    } else {
-      bool available = await _speech.initialize(
-        onStatus: (val) => logger.d('onStatus: $val'),
-        onError: (val) => logger.e('onError: $val'),
-      );
-      if (available) {
-        setState(() {
-          _isListening = true;
-        });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _messageController.text = val.recognizedWords;
-          }),
-        );
-      }
-    }
   }
 
   // Função para fazer a requisição à API Flask
@@ -313,9 +284,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Row(
         children: [
           IconButton(
-            onPressed: () {
-              logger.d("Nova conversa iniciada");
-            },
+            onPressed: (){},
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: const BoxDecoration(
@@ -361,15 +330,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: _toggleVoiceInput,
-                    icon: Icon(
-                      _isListening ? Icons.mic : Icons.mic_none,
-                      color: _isListening
-                          ? const Color(0xFFF6790F)
-                          : const Color(0xFFB8B8B8),
-                    ),
-                  ),
+
                 ],
               ),
             ),
