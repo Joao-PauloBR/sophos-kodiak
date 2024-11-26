@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:sophos_kodiak/screens/settings_screen.dart';
 import 'package:sophos_kodiak/screens/login_screen.dart'; // Importe a tela de login
+import 'package:shared_preferences/shared_preferences.dart';
 
 final logger = Logger();
 
@@ -36,10 +37,12 @@ class _MainScreenState extends State<MainScreen> {
     {'title': 'Qual é a previsão de vendas', 'subtitle': 'para o próximo trimestre?'},
   ];
   final List<ChatMessage> _messages = [];
+  late String _userName;
 
   @override
   void initState() {
     super.initState();
+    _loadUserName();
     _focusNode.addListener(_onFocusChange);
   }
 
@@ -48,6 +51,13 @@ class _MainScreenState extends State<MainScreen> {
     _focusNode.dispose();
     _messageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('userName') ?? widget.userName;
+    });
   }
 
   void _onFocusChange() {
@@ -204,7 +214,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           Text(
-            widget.userName,
+            _userName,
             style: const TextStyle(
               color: Color(0xFFF6790F),
               fontSize: 24,
@@ -382,9 +392,19 @@ class _MainScreenState extends State<MainScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsScreen(cnpj: widget.cnpj, password: widget.password),
+                  builder: (context) => SettingsScreen(
+                    cnpj: widget.cnpj,
+                    password: widget.password,
+                    userName: _userName,
+                  ),
                 ),
-              );
+              ).then((newUserName) {
+                if (newUserName != null) {
+                  setState(() {
+                    _userName = newUserName;
+                  });
+                }
+              });
             },
           ),
           _buildDropdownItem(Icons.history, 'Histórico'),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sophos_kodiak/screens/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   final String cnpj;
   final String password;
+  final String userName;
 
-  const SettingsScreen({required this.cnpj, required this.password, super.key});
+  const SettingsScreen({required this.cnpj, required this.password, required this.userName, super.key});
 
   @override
   SettingsScreenState createState() => SettingsScreenState();
@@ -13,6 +15,50 @@ class SettingsScreen extends StatefulWidget {
 
 class SettingsScreenState extends State<SettingsScreen> {
   bool isPasswordVisible = false;
+  late String _userName;
+
+  @override
+  void initState() {
+    super.initState();
+    _userName = widget.userName;
+  }
+
+  void _showNameDialog() {
+    final TextEditingController nameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Modificar Nome'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(hintText: 'Digite seu nome preferido'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final newUserName = nameController.text;
+                setState(() {
+                  _userName = newUserName;
+                });
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('userName', newUserName);
+                Navigator.of(context).pop(newUserName); // Retorna o novo nome
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +98,9 @@ class SettingsScreenState extends State<SettingsScreen> {
               context,
               icon: Icons.person_rounded,
               title: 'Nome',
-              subtitle: 'Controtech',
+              subtitle: _userName,
               iconColor: Color(0xFFE6E6E6),
+              onTap: _showNameDialog,
             ),
             _buildListTile(
               context,
