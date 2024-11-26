@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:sophos_kodiak/screens/settings_screen.dart';
+import 'package:sophos_kodiak/screens/login_screen.dart'; // Importe a tela de login
 
 final logger = Logger();
 
 class MainScreen extends StatefulWidget {
   final String userName;
+  final String cnpj;
+  final String password;
 
-  const MainScreen({super.key, required this.userName});
+  const MainScreen({required this.userName, required this.cnpj, required this.password, super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -371,7 +375,18 @@ class _MainScreenState extends State<MainScreen> {
       ),
       child: Column(
         children: [
-          _buildDropdownItem(Icons.person_outline, 'Conta'),
+          _buildDropdownItem(
+            Icons.person_outline,
+            'Conta',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(cnpj: widget.cnpj, password: widget.password),
+                ),
+              );
+            },
+          ),
           _buildDropdownItem(Icons.history, 'Histórico'),
           _buildDropdownItem(Icons.notifications_none, 'Notificações'),
           const Divider(color: Color(0xFF454545), height: 1),
@@ -380,6 +395,13 @@ class _MainScreenState extends State<MainScreen> {
             'Sair',
             textColor: Colors.red,
             iconColor: Colors.red,
+            onTap: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -391,12 +413,10 @@ class _MainScreenState extends State<MainScreen> {
       String text, {
         Color textColor = Colors.white,
         Color iconColor = Colors.white,
+        VoidCallback? onTap,
       }) {
     return InkWell(
-      onTap: () {
-        logger.d("Clicou em: $text");
-        _toggleDropdown();
-      },
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(

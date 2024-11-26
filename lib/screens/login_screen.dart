@@ -15,6 +15,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _cnpjController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  String? _loggedInCnpj;
+  String? _loggedInPassword;
 
   // Função para formatar o CNPJ enquanto digita
   String _formatCnpj(String value) {
@@ -46,15 +48,17 @@ class _LoginScreenState extends State<LoginScreen> {
     return password.length >= 8;
   }
 
-  // Função para autenticar o usuário
   void _handleLogin() {
     final cnpj = _cnpjController.text;
     final password = _passwordController.text;
 
     if (_isValidCnpj(cnpj) && _isValidPassword(password)) {
-      // Autenticação com parâmetros fixos
       if (cnpj == '12.345.678/0001-90' && password == 'password123') {
         logger.i('Login bem-sucedido com CNPJ: $cnpj');
+        setState(() {
+          _loggedInCnpj = cnpj;
+          _loggedInPassword = password;
+        });
         _askPreferredName();
       } else {
         logger.e('CNPJ ou senha incorretos');
@@ -71,18 +75,18 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
       context: context,
       builder: (context) {
-        final _nameController = TextEditingController();
+        final nameController = TextEditingController();
         return AlertDialog(
           title: const Text('Nome Preferido'),
           content: TextField(
-            controller: _nameController,
+            controller: nameController,
             decoration: const InputDecoration(hintText: 'Digite seu nome preferido'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                _goToMainScreen(_nameController.text);
+                _goToMainScreen(nameController.text);
               },
               child: const Text('OK'),
             ),
@@ -96,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _goToMainScreen(String userName) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => MainScreen(userName: userName),
+        builder: (context) => MainScreen(userName: userName, cnpj: _loggedInCnpj!, password: _loggedInPassword!),
       ),
     );
   }
