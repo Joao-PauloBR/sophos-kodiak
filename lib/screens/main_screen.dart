@@ -15,9 +15,9 @@ class MainScreen extends StatefulWidget {
 
   const MainScreen(
       {required this.userName,
-        required this.cnpj,
-        required this.password,
-        super.key});
+      required this.cnpj,
+      required this.password,
+      super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -67,7 +67,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _userName = widget.userName; // Inicializa _userName com o valor passado pelo widget
+    _userName =
+        widget.userName; // Inicializa _userName com o valor passado pelo widget
     _focusNode.addListener(_onFocusChange);
   }
 
@@ -155,26 +156,6 @@ class _MainScreenState extends State<MainScreen> {
         });
       }
     }
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Erro'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -266,23 +247,26 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildMessageBubble(ChatMessage message) {
     return Align(
       alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: message.isUser
-              ? const Color(0xFFF6790F)
-              : const Color(0xFF454545),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.75,
-        ),
-        child: Text(
-          message.text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
+      child: IntrinsicWidth(
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.only(left: 16, right: 14, top: 8, bottom: 8),
+          decoration: BoxDecoration(
+            color: message.isUser
+                ? const Color(0xFFF6790F)
+                : const Color(0xFF454545),
+            borderRadius: BorderRadius.circular(35),
+          ),
+          constraints: BoxConstraints(
+            minWidth: 50, // Largura mínima
+            maxWidth: MediaQuery.of(context).size.width * 0.75, // Largura máxima
+          ),
+          child: Text(
+            message.text,
+            style: TextStyle(
+              color: message.isUser ? const Color(0xFF5A2D00) : Color(0xFFE6E6E6),
+              fontSize: 16,
+            ),
           ),
         ),
       ),
@@ -292,12 +276,12 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildSuggestionsCarousel() {
     return Container(
       height: 50,
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.only(top: 6, bottom: 16),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: _suggestions.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           return _buildSuggestionButton(
             _suggestions[index]['title']!,
@@ -310,7 +294,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildInputArea() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(left: 6, right: 6, bottom: 12),
       child: Row(
         children: [
           IconButton(
@@ -354,9 +338,9 @@ class _MainScreenState extends State<MainScreen> {
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         hintText: 'Mensagem',
-                        hintStyle: TextStyle(color: Color(0xFFB8B8B8)),
+                        hintStyle: TextStyle(color: Color(0xFFA1A1A1)),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(left: 15, right: 7.5),
+                        contentPadding: EdgeInsets.only(left: 16, right: 12),
                       ),
                     ),
                   ),
@@ -444,12 +428,12 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildDropdownItem(
-      IconData icon,
-      String text, {
-        Color textColor = Colors.white,
-        Color iconColor = Colors.white,
-        VoidCallback? onTap,
-      }) {
+    IconData icon,
+    String text, {
+    Color textColor = Colors.white,
+    Color iconColor = Colors.white,
+    VoidCallback? onTap,
+  }) {
     return InkWell(
       onTap: onTap,
       child: Padding(
