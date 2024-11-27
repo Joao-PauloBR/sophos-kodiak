@@ -20,17 +20,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Função para formatar o CNPJ enquanto digita
   String _formatCnpj(String value) {
-    value = value.replaceAll(RegExp(r'[^\d]'), '');
+    value = value.replaceAll(RegExp(r'\D'), '');
     if (value.length > 14) value = value.substring(0, 14);
     if (value.length > 12) {
       value =
-      '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12)}';
+          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8, 12)}-${value.substring(12)}';
     } else if (value.length > 8) {
       value =
-      '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8)}';
+          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5, 8)}/${value.substring(8)}';
     } else if (value.length > 5) {
       value =
-      '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5)}';
+          '${value.substring(0, 2)}.${value.substring(2, 5)}.${value.substring(5)}';
     } else if (value.length > 2) {
       value = '${value.substring(0, 2)}.${value.substring(2)}';
     }
@@ -80,7 +80,8 @@ class _LoginScreenState extends State<LoginScreen> {
           title: const Text('Nome Preferido'),
           content: TextField(
             controller: nameController,
-            decoration: const InputDecoration(hintText: 'Digite seu nome preferido'),
+            decoration:
+                const InputDecoration(hintText: 'Digite seu nome preferido'),
           ),
           actions: [
             TextButton(
@@ -100,7 +101,10 @@ class _LoginScreenState extends State<LoginScreen> {
   void _goToMainScreen(String userName) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => MainScreen(userName: userName, cnpj: _loggedInCnpj!, password: _loggedInPassword!),
+        builder: (context) => MainScreen(
+            userName: userName,
+            cnpj: _loggedInCnpj!,
+            password: _loggedInPassword!),
       ),
     );
   }
@@ -137,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Stack(
           children: [
             // Retângulo de fundo
-            Container(
+            SizedBox(
               height: screenHeight,
               child: Align(
                 alignment: Alignment.bottomCenter,

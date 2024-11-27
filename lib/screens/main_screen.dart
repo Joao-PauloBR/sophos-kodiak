@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
+import 'package:sophos_kodiak/screens/login_screen.dart';
 import 'package:sophos_kodiak/screens/settings_screen.dart';
-import 'package:sophos_kodiak/screens/login_screen.dart'; // Importe a tela de login
-import 'package:shared_preferences/shared_preferences.dart';
 
 final logger = Logger();
 
@@ -13,7 +13,11 @@ class MainScreen extends StatefulWidget {
   final String cnpj;
   final String password;
 
-  const MainScreen({required this.userName, required this.cnpj, required this.password, super.key});
+  const MainScreen(
+      {required this.userName,
+        required this.cnpj,
+        required this.password,
+        super.key});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -25,16 +29,37 @@ class _MainScreenState extends State<MainScreen> {
   final FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
   final List<Map<String, String>> _suggestions = [
-    {'title': 'Qual é o valor total de', 'subtitle': 'vendas para o ano atual?'},
-    {'title': 'Qual cliente realizou o', 'subtitle': 'maior número de compras?'},
+    {
+      'title': 'Qual é o valor total de',
+      'subtitle': 'vendas para o ano atual?'
+    },
+    {
+      'title': 'Qual cliente realizou o',
+      'subtitle': 'maior número de compras?'
+    },
     {'title': 'Quais são os 5 produtos', 'subtitle': 'mais vendidos?'},
-    {'title': 'Quantos clientes ativos', 'subtitle': 'existem no banco de dados?'},
-    {'title': 'Quais cidades têm maior', 'subtitle': 'concentração de clientes?'},
+    {
+      'title': 'Quantos clientes ativos',
+      'subtitle': 'existem no banco de dados?'
+    },
+    {
+      'title': 'Quais cidades têm maior',
+      'subtitle': 'concentração de clientes?'
+    },
     {'title': 'Qual é o total de contas', 'subtitle': 'a receber em aberto?'},
-    {'title': 'Qual é o percentual de', 'subtitle': 'títulos pagos vs. em aberto?'},
+    {
+      'title': 'Qual é o percentual de',
+      'subtitle': 'títulos pagos vs. em aberto?'
+    },
     {'title': 'Como as vendas evoluíram', 'subtitle': 'nos últimos meses?'},
-    {'title': 'Qual é o tempo médio', 'subtitle': 'entre pedido e faturamento?'},
-    {'title': 'Qual é a previsão de vendas', 'subtitle': 'para o próximo trimestre?'},
+    {
+      'title': 'Qual é o tempo médio',
+      'subtitle': 'entre pedido e faturamento?'
+    },
+    {
+      'title': 'Qual é a previsão de vendas',
+      'subtitle': 'para o próximo trimestre?'
+    },
   ];
   final List<ChatMessage> _messages = [];
   late String _userName;
@@ -42,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserName();
+    _userName = widget.userName; // Inicializa _userName com o valor passado pelo widget
     _focusNode.addListener(_onFocusChange);
   }
 
@@ -51,13 +76,6 @@ class _MainScreenState extends State<MainScreen> {
     _focusNode.dispose();
     _messageController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadUserName() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userName = prefs.getString('userName') ?? widget.userName;
-    });
   }
 
   void _onFocusChange() {
@@ -77,11 +95,10 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  // Função para fazer a requisição à API Flask
   Future<String> _getResponseFromApi(String message) async {
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:5000/perguntar'), // URL do emulador para localhost
+        Uri.parse('http://10.0.2.2:5000/perguntar'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -91,7 +108,6 @@ class _MainScreenState extends State<MainScreen> {
       );
 
       if (response.statusCode == 200) {
-        // Decodificando o corpo da resposta em UTF-8
         final decodedResponse = utf8.decode(response.bodyBytes);
         final Map<String, dynamic> data = jsonDecode(decodedResponse);
         return data['resposta'] as String;
@@ -298,7 +314,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Row(
         children: [
           IconButton(
-            onPressed: (){},
+            onPressed: () {},
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: const BoxDecoration(
@@ -333,18 +349,17 @@ class _MainScreenState extends State<MainScreen> {
                       textInputAction: TextInputAction.newline,
                       keyboardType: TextInputType.multiline,
                       minLines: 1,
-                      maxLines: 3,
+                      maxLines: 5,
                       scrollPhysics: BouncingScrollPhysics(),
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         hintText: 'Mensagem',
                         hintStyle: TextStyle(color: Color(0xFFB8B8B8)),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        contentPadding: EdgeInsets.only(left: 15, right: 7.5),
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),

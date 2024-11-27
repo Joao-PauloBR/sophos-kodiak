@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sophos_kodiak/screens/login_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   final String cnpj;
   final String password;
   final String userName;
 
-  const SettingsScreen({required this.cnpj, required this.password, required this.userName, super.key});
+  const SettingsScreen(
+      {required this.cnpj,
+      required this.password,
+      required this.userName,
+      super.key});
 
   @override
   SettingsScreenState createState() => SettingsScreenState();
@@ -33,7 +36,8 @@ class SettingsScreenState extends State<SettingsScreen> {
           title: const Text('Modificar Nome'),
           content: TextField(
             controller: nameController,
-            decoration: const InputDecoration(hintText: 'Digite seu nome preferido'),
+            decoration:
+                const InputDecoration(hintText: 'Digite seu nome preferido'),
           ),
           actions: [
             TextButton(
@@ -43,13 +47,11 @@ class SettingsScreenState extends State<SettingsScreen> {
               child: const Text('Cancelar'),
             ),
             TextButton(
-              onPressed: () async {
+              onPressed: () {
                 final newUserName = nameController.text;
                 setState(() {
                   _userName = newUserName;
                 });
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setString('userName', newUserName);
                 Navigator.of(context).pop(newUserName); // Retorna o novo nome
               },
               child: const Text('OK'),
@@ -64,7 +66,12 @@ class SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Conta', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+        title: const Text('Conta',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5)),
         backgroundColor: Color(0xFF171717),
         iconTheme: const IconThemeData(color: Color(0xFFE6E6E6)),
       ),
@@ -145,27 +152,32 @@ class SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildListTile(BuildContext context,
-      {required IconData icon, required String title, String subtitle = '', VoidCallback? onTap, Color textColor = Colors.white, Color iconColor = Colors.white}) {
+      {required IconData icon,
+      required String title,
+      String subtitle = '',
+      VoidCallback? onTap,
+      Color textColor = Colors.white,
+      Color iconColor = Colors.white}) {
     return ListTile(
       leading: Icon(icon, color: iconColor),
       title: subtitle.isEmpty
           ? Text(
-        title,
-        style: TextStyle(color: textColor, fontSize: 18),
-      )
+              title,
+              style: TextStyle(color: textColor, fontSize: 18),
+            )
           : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(color: textColor, fontSize: 18),
-          ),
-          Text(
-            subtitle,
-            style: const TextStyle(color: Colors.grey),
-          ),
-        ],
-      ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(color: textColor, fontSize: 18),
+                ),
+                Text(
+                  subtitle,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
       onTap: onTap,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
     );
