@@ -313,15 +313,15 @@ class _MainScreenState extends State<MainScreen> {
           IconButton(
             onPressed: _startNewConversation,
             icon: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(4),
               decoration: const BoxDecoration(
                 color: Color(0xFF5C5C5C),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.add_rounded,
-                color: Color(0xFFB8B8B8),
-                size: 24,
+                color: Color(0xFFCECECE),
+                size: 36,
               ),
             ),
           ),
@@ -364,7 +364,7 @@ class _MainScreenState extends State<MainScreen> {
           IconButton(
             onPressed: _sendMessage,
             icon: Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(4),
               decoration: const BoxDecoration(
                 color: Color(0xFFE6E6E6),
                 shape: BoxShape.circle,
@@ -372,7 +372,7 @@ class _MainScreenState extends State<MainScreen> {
               child: const Icon(
                 Icons.arrow_upward_rounded,
                 color: Color(0xFF2E2E2E),
-                size: 24,
+                size: 36,
               ),
             ),
           ),
@@ -391,17 +391,10 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildProfileDropdown() {
     return Container(
-      width: 200,
+      width: 190,
       decoration: BoxDecoration(
         color: const Color(0xFF2E2E2E),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         children: [
@@ -429,7 +422,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           _buildDropdownItem(Icons.history, 'Histórico'),
           _buildDropdownItem(Icons.notifications_none, 'Notificações'),
-          const Divider(color: Color(0xFF454545), height: 1),
+          const Divider(color: Color(0xFF454545), height: 3),
           _buildDropdownItem(
             Icons.logout,
             'Sair',
@@ -458,10 +451,10 @@ class _MainScreenState extends State<MainScreen> {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           children: [
-            Icon(icon, color: iconColor, size: 20),
+            Icon(icon, color: iconColor, size: 24),
             const SizedBox(width: 12),
             Text(
               text,
@@ -488,7 +481,7 @@ class _MainScreenState extends State<MainScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: const Color(0xFF454545),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(35),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

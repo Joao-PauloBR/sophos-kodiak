@@ -33,18 +33,34 @@ class SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Modificar Nome'),
+          backgroundColor: const Color(0xFF171717),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: const Text(
+            'Modificar Nome',
+            style: TextStyle(color: Color(0xFFE6E6E6)),
+          ),
           content: TextField(
             controller: nameController,
-            decoration:
-                const InputDecoration(hintText: 'Digite seu nome preferido'),
+            style: const TextStyle(color: Color(0xFFE6E6E6)),
+            // Define a cor do texto aqui
+            decoration: const InputDecoration(
+              hintText: 'Digite seu nome preferido',
+              hintStyle: TextStyle(
+                  color: Color(0xFFA1A1A1), fontWeight: FontWeight.w400),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFFF6790F)),
+              ),
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancelar',
+                  style: TextStyle(color: Color(0xFFE6E6E6))),
             ),
             TextButton(
               onPressed: () {
@@ -54,7 +70,8 @@ class SettingsScreenState extends State<SettingsScreen> {
                 });
                 Navigator.of(context).pop(newUserName); // Retorna o novo nome
               },
-              child: const Text('OK'),
+              child:
+                  const Text('OK', style: TextStyle(color: Color(0xFFF6790F))),
             ),
           ],
         );

@@ -70,18 +70,32 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Função para solicitar o nome preferido
   void _askPreferredName() {
     showDialog(
       context: context,
       builder: (context) {
         final nameController = TextEditingController();
         return AlertDialog(
-          title: const Text('Nome Preferido'),
+          backgroundColor: const Color(0xFF171717),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: const Text(
+            'Nome Preferido',
+            style: TextStyle(color: Color(0xFFE6E6E6)),
+          ),
           content: TextField(
             controller: nameController,
-            decoration:
-                const InputDecoration(hintText: 'Digite seu nome preferido'),
+            style: const TextStyle(color: Color(0xFFE6E6E6)),
+            // Define a cor do texto aqui
+            decoration: const InputDecoration(
+              hintText: 'Digite seu nome preferido',
+              hintStyle: TextStyle(
+                  color: Color(0xFFA1A1A1), fontWeight: FontWeight.w400),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFFF6790F)),
+              ),
+            ),
           ),
           actions: [
             TextButton(
@@ -89,7 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.of(context).pop();
                 _goToMainScreen(nameController.text);
               },
-              child: const Text('OK'),
+              child:
+                  const Text('OK', style: TextStyle(color: Color(0xFFF6790F))),
             ),
           ],
         );
@@ -97,7 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Função para redirecionar para a tela principal
   void _goToMainScreen(String userName) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -109,7 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Função para exibir um diálogo de erro
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
