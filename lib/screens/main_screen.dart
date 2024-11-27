@@ -275,7 +275,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Text(
             message.text,
             style: TextStyle(
-              fontWeight: FontWeight.w500,
+              fontWeight: message.isUser ? FontWeight.w500 : FontWeight.normal,
               color:
                   message.isUser ? const Color(0xFF3B1D00) : Color(0xFFE6E6E6),
               fontSize: 16,
