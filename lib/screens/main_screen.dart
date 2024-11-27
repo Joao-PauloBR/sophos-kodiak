@@ -163,29 +163,38 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF171717),
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                _buildHeader(),
-                Expanded(
-                  child: _buildChatArea(),
+        child: GestureDetector(
+          onTap: () {
+            if (_isDropdownVisible) {
+              setState(() {
+                _isDropdownVisible = false;
+              });
+            }
+          },
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  _buildHeader(),
+                  Expanded(
+                    child: _buildChatArea(),
+                  ),
+                  _buildSuggestionsCarousel(),
+                  _buildInputArea(),
+                ],
+              ),
+              if (_isDropdownVisible)
+                Positioned(
+                  top: 60,
+                  right: 16,
+                  child: _buildProfileDropdown(),
                 ),
-                _buildSuggestionsCarousel(),
-                _buildInputArea(),
-              ],
-            ),
-            if (_isDropdownVisible)
-              Positioned(
-                top: 60,
-                right: 16,
-                child: _buildProfileDropdown(),
-              ),
-            if (_isLoading)
-              Center(
-                child: CircularProgressIndicator(),
-              ),
-          ],
+              if (_isLoading)
+                Center(
+                  child: CircularProgressIndicator(),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -250,7 +259,8 @@ class _MainScreenState extends State<MainScreen> {
       child: IntrinsicWidth(
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6),
-          padding: const EdgeInsets.only(left: 16, right: 14, top: 8, bottom: 8),
+          padding:
+              const EdgeInsets.only(left: 16, right: 14, top: 8, bottom: 8),
           decoration: BoxDecoration(
             color: message.isUser
                 ? const Color(0xFFF6790F)
@@ -259,12 +269,15 @@ class _MainScreenState extends State<MainScreen> {
           ),
           constraints: BoxConstraints(
             minWidth: 50, // Largura mínima
-            maxWidth: MediaQuery.of(context).size.width * 0.75, // Largura máxima
+            maxWidth:
+                MediaQuery.of(context).size.width * 0.75, // Largura máxima
           ),
           child: Text(
             message.text,
             style: TextStyle(
-              color: message.isUser ? const Color(0xFF5A2D00) : Color(0xFFE6E6E6),
+              fontWeight: FontWeight.w500,
+              color:
+                  message.isUser ? const Color(0xFF3B1D00) : Color(0xFFE6E6E6),
               fontSize: 16,
             ),
           ),
@@ -298,7 +311,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Row(
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: _startNewConversation,
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: const BoxDecoration(
@@ -366,6 +379,14 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
+  }
+
+  void _startNewConversation() {
+    setState(() {
+      _messages.clear();
+      _messageController.clear();
+      _focusNode.unfocus();
+    });
   }
 
   Widget _buildProfileDropdown() {
